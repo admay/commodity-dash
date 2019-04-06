@@ -12,6 +12,9 @@ import datetime as dt
 # Some Dash provided CSS
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
+# boujie cache for whack memoization
+dash_cache = {}
+
 # upload data on startup
 # can be optimized for runtime using real persistence
 # optimizing for runtime now to reduce I/O costs
@@ -48,16 +51,43 @@ app.layout = html.Div(children=[
 @app.callback(
         Output('commodity-graph', 'figure'),
         [Input('commodity-selector', 'value')])
-def update_dash(index):
+def build_view(index):
     """
+    Callback function to update the UI and cache resulting analysis
+
+    """
+    components = dash_cache[index] if index in dash_cache else create_dash_components(index)
+    cache_success = cache_components(index, components)
+    if (cache_success != 0): print("There was an error cacheing the index components for {index}".format(index=index))
+    return components
+
+def cache_components(index, components):
+    dash_cache[index]=components
+    return 0
+
+def create_dash_components(index):
+    """
+    Creates dash compatible graph components for displaying
+
+    Parameters
+    __________
+    index - Commodity index to be analyzed, will default to `headers[0]` if no index is selected
+            The default value here is mostly for when the app first initializes
+
+    Returns
+    _______
+    A `dcc.Graph` compatible dict for displaying data
+    Currently will contain:
+    - commodity price, `price_trace`
+    - commodity monthly return, `monthly_return_trace`
     """
     # set a default index if none is selected
     # used for app startup
-    index = index if index else headers[1]
+    index = index if index else headers[0]
     print('Selecting index: {index}'.format(index=index))
 
     # split index data from base df
-    df_index = df[['DATE', 'YEAR', 'MONTH', index if index else headers[1]]]
+    df_index = df[['DATE', 'YEAR', 'MONTH', index]]
 
     monthly_return_data = df_index.groupby(['YEAR', 'MONTH']).apply(lambda p: p.iloc[-1] - p.iloc[0])
 
@@ -66,8 +96,7 @@ def update_dash(index):
     price_trace = {'x': date_series, 'y': df[index], 'type': 'line', 'name': 'Price'}
     monthly_return_trace = {'x': start_of_month_series, 'y': monthly_return_data[index], 'type': 'bar', 'name': 'Monthly return'}
 
-    # create the plotly layout
-    return {
+    ret = {
             'data':[
                 # add traces to be displayed here
                 price_trace,
@@ -77,8 +106,7 @@ def update_dash(index):
                 'title': index
                 }
             }
+    return ret
 
-    # run app server on main
 if __name__ == '__main__':
     app.run_server(debug=True)
-
