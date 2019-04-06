@@ -5,9 +5,12 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 import pandas as pd
-import plotly.graph_objs as go
 
 import datetime as dt
+
+# TODO: Move this all into a startup script
+# TODO: Add CSV validation for warning of bad data formats
+# TODO: Add file upload for ease of use by developers
 
 # Some Dash provided CSS
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -61,8 +64,20 @@ def build_view(index):
     if (cache_success != 0): print("There was an error cacheing the index components for {index}".format(index=index))
     return components
 
-def cache_components(index, components):
-    dash_cache[index]=components
+def cache_components(key, data):
+    """
+    Caches a give data object in the `dash_cache`
+
+    Parameters
+    __________
+    key - Cache key for lookup
+    data - Data being stored
+
+    Returns
+    _______
+    0 on success, 1 on failure
+    """
+    dash_cache[key]=data
     return 0
 
 def create_dash_components(index):
@@ -93,8 +108,10 @@ def create_dash_components(index):
 
     # create trace dicts here
     # should this be a function?
-    price_trace = {'x': date_series, 'y': df[index], 'type': 'line', 'name': 'Price'}
+    # price_trace = {'x': date_series, 'y': df[index], 'type': 'line', 'name': 'Price'}
+    price_trace = to_component_dict(date_series, df[index], chart_type='line', name='Price')
     monthly_return_trace = {'x': start_of_month_series, 'y': monthly_return_data[index], 'type': 'bar', 'name': 'Monthly return'}
+    volitility_trace = {}
 
     ret = {
             'data':[
@@ -107,6 +124,9 @@ def create_dash_components(index):
                 }
             }
     return ret
+
+def to_component_dict(x, y, name, chart_type):
+    return {'x': x, 'y': y, 'name': name, 'type': chart_type, }
 
 if __name__ == '__main__':
     app.run_server(debug=True)
