@@ -41,13 +41,8 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div(children=[
     html.H4(children='Commodity Data'),
     # generate_table(df)
-    dcc.Dropdown(
-        id='commodity-selector',
-        options=[{'label': h, 'value': h} for h in headers]
-        ),
-    dcc.Graph(
-        id='commodity-graph'
-        )
+    dcc.Dropdown(id='commodity-selector', options=[{'label': h, 'value': h} for h in headers]),
+    dcc.Graph(id='commodity-graph')
     ])
 
 @app.callback(
