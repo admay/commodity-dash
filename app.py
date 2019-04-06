@@ -78,7 +78,7 @@ def update_dash(index):
       # split index data from base df
       df_index = df[['DATE', 'YEAR', 'MONTH', index if index else headers[1]]]
 
-      monthly_return_data = df_index.groupby(['YEAR', 'MONTH']).apply(monthly_return)
+      monthly_return_data = df_index.groupby(['YEAR', 'MONTH']).apply(lambda p: p.iloc[-1] - p.iloc[0])
 
       # split datas into scatter (price) and monthly bar (monthly return, volatility, etc...)
       scatter_data = [df[index]]
