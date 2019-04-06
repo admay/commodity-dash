@@ -66,10 +66,6 @@ def update_dash(index):
     price_trace = {'x': date_series, 'y': df[index], 'type': 'line', 'name': 'Price'}
     monthly_return_trace = {'x': start_of_month_series, 'y': monthly_return_data[index], 'type': 'bar', 'name': 'Monthly return'}
 
-
-
-    # print(monthly_return_data[index])
-
     # create the plotly layout
     return {
             'data':[
