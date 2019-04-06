@@ -49,35 +49,40 @@ app.layout = html.Div(children=[
         Output('commodity-graph', 'figure'),
         [Input('commodity-selector', 'value')])
 def update_dash(index):
+    """
+    """
     # set a default index if none is selected
-      # used for app startup
-      index = index if index else headers[1]
-      print('Selecting index: {index}'.format(index=index))
+    # used for app startup
+    index = index if index else headers[1]
+    print('Selecting index: {index}'.format(index=index))
 
-      # split index data from base df
-      df_index = df[['DATE', 'YEAR', 'MONTH', index if index else headers[1]]]
+    # split index data from base df
+    df_index = df[['DATE', 'YEAR', 'MONTH', index if index else headers[1]]]
 
-      monthly_return_data = df_index.groupby(['YEAR', 'MONTH']).apply(lambda p: p.iloc[-1] - p.iloc[0])
+    monthly_return_data = df_index.groupby(['YEAR', 'MONTH']).apply(lambda p: p.iloc[-1] - p.iloc[0])
 
-      # split datas into scatter (price) and monthly bar (monthly return, volatility, etc...)
-      scatter_data = [df[index]]
-      monthly_bar_data = []
+    # create trace dicts here
+    # should this be a function?
+    price_trace = {'x': date_series, 'y': df[index], 'type': 'line', 'name': 'Price'}
+    monthly_return_trace = {'x': start_of_month_series, 'y': monthly_return_data[index], 'type': 'bar', 'name': 'Monthly return'}
 
-      # print(monthly_return_data[index])
 
-      # create the plotly layout
-      return {
-              'data':[
-                  {'x': date_series, 'y': df[index], 'type': 'line', 'name': 'Price'},
-                  {'x': start_of_month_series, 'y': monthly_return_data[index], 'type': 'bar', 'name': 'Monthly return'},
-                  # {'x': start_of_month_series, 'y': [92, 63, 21, 14, 51], 'type': 'bar', 'name': 'Boats'},
-                  ],
-              'layout': {
-                  'title': 'hoopla'
-                  }
-              }
 
-      # run app server on main
+    # print(monthly_return_data[index])
+
+    # create the plotly layout
+    return {
+            'data':[
+                # add traces to be displayed here
+                price_trace,
+                monthly_return_trace
+                ],
+            'layout': {
+                'title': index
+                }
+            }
+
+    # run app server on main
 if __name__ == '__main__':
     app.run_server(debug=True)
 
