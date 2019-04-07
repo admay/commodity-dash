@@ -1,4 +1,5 @@
 class TRACE_OPTS:
+    # Trace configuration `opts` for each app trace
     MONTHLY_RETURN = {
             'name': 'Monthly Return',
             'type': 'bar',

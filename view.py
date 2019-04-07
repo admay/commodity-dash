@@ -64,6 +64,15 @@ def create_dash_components(index, df, date_series, som_series, default_header):
     return ret
 
 def create_trace(x_data, y_data, opts):
+    """
+    Helper function to create trace dicts
+
+    Parameters
+    __________
+    x_data - Series repreenting the x axis
+    y_data - Series representing the y axis
+    opts - Dict of options containing any and all extra, trace specific configuration
+    """
     return {
             'y': y_data,
             'x': x_data,
