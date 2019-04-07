@@ -10,8 +10,6 @@ import ffn
 
 import config
 
-print(config.TRACE_OPTS.MONTHLY_RETURN)
-
 # TODO: Move this all into a startup script
 # TODO: Add CSV validation for warning of bad data formats
 # TODO: Add file upload for ease of use by developers
