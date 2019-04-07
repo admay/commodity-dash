@@ -8,6 +8,10 @@ from dash.dependencies import Input, Output
 import pandas as pd
 import ffn
 
+import config
+
+print(config.TRACE_OPTS.MONTHLY_RETURN)
+
 # TODO: Move this all into a startup script
 # TODO: Add CSV validation for warning of bad data formats
 # TODO: Add file upload for ease of use by developers
@@ -51,34 +55,6 @@ app.layout = html.Div(children=[
     dcc.Graph(id='commodity-graph')
     ])
 
-trace_opts = {
-            'monthly_return': {
-                'name': 'Monthly Return',
-                'type': 'bar',
-                'yaxis': 'y4',
-                'side': 'left',
-                'position': 0.3
-            },
-            'volatility': {
-                'name': 'Volatility',
-                'type': 'line',
-                'yaxis': 'y3',
-                'side': 'right',
-                'position': 0.45
-            },
-            'drawdown': {
-                'name': 'Drawdown',
-                'type': 'line',
-                'yaxis': 'y2',
-            },
-            'price': {
-                'name': 'Price',
-                'type': 'line',
-                'yaxis': 'y1',
-                'side': 'left',
-                'position': 0.15
-            }
-        }
 
 def cache_components(key, data):
     """
@@ -127,25 +103,25 @@ def create_dash_components(index):
     price_trace = create_trace(
             x_data=date_series,
             y_data=df_index[index],
-            opts=trace_opts['price']
+            opts=config.TRACE_OPTS.PRICE
             )
 
     drawdown_trace = create_trace(
             x_data=date_series,
             y_data=df_index[index].to_drawdown_series(),
-            opts=trace_opts['drawdown']
+            opts=config.TRACE_OPTS.DRAWDOWN
             )
 
     volatility_trace = create_trace(
             x_data=date_series,
             y_data=df_index[index].rolling(3).std(),
-            opts=trace_opts['volatility']
+            opts=config.TRACE_OPTS.VOLATILITY
             )
 
     monthly_return_trace = create_trace(
             x_data=som_series,
             y_data=monthly_return_data[index],
-            opts=trace_opts['monthly_return']
+            opts=config.TRACE_OPTS.MONTHLY_RETURN
             )
 
     ret = {
