@@ -8,7 +8,6 @@ import pandas as pd
 from cache import Cache
 from view import create_dash_components
 
-# TODO: Move this all into a startup script
 # TODO: Add CSV validation for warning of bad data formats
 # TODO: Add file upload for ease of use by developers
 
