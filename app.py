@@ -8,8 +8,8 @@ from dash.dependencies import Input, Output
 import pandas as pd
 import ffn
 
-import config
 from cache import Cache
+from view import create_dash_components
 
 # TODO: Move this all into a startup script
 # TODO: Add CSV validation for warning of bad data formats
@@ -54,132 +54,6 @@ app.layout = html.Div(children=[
     dcc.Graph(id='commodity-graph')
     ])
 
-
-def cache_components(key, data):
-    """
-    Caches a give data object in the `dash_cache`
-
-    Parameters
-    __________
-    key - Cache key for lookup
-    data - Data being stored
-
-    Returns
-    _______
-    0 on success, 1 on failure
-    """
-    dash_cache[key]=data
-    return 0
-
-# maybe I should break these into multiple functions and add toggles for the users
-def create_dash_components(index):
-    """
-    Creates dash compatible graph components for displaying
-
-    Parameters
-    __________
-    index - Commodity index to be analyzed, will default to `headers[0]` if no index is selected
-            The default value here is mostly for when the app first initializes
-
-    Returns
-    _______
-    A `dcc.Graph` compatible dict for displaying data
-    Currently will contain:
-    - commodity price, `price_trace`
-    - commodity monthly return, `monthly_return_trace`
-    """
-    # set a default index if none is selected
-    # used for app startup
-    index = index if index else headers[0]
-    print('Selecting index: {index}'.format(index=index))
-
-    # split index data from base df
-    df_index = df[['DATE', 'YEAR', 'MONTH', index]]
-
-    monthly_return_data = df_index.groupby(['YEAR', 'MONTH']).apply(lambda p: p.iloc[-1] - p.iloc[0])
-
-    # create trace dicts here
-    price_trace = create_trace(
-            x_data=date_series,
-            y_data=df_index[index],
-            opts=config.TRACE_OPTS.PRICE
-            )
-
-    drawdown_trace = create_trace(
-            x_data=date_series,
-            y_data=df_index[index].to_drawdown_series(),
-            opts=config.TRACE_OPTS.DRAWDOWN
-            )
-
-    volatility_trace = create_trace(
-            x_data=date_series,
-            y_data=df_index[index].rolling(3).std(),
-            opts=config.TRACE_OPTS.VOLATILITY
-            )
-
-    monthly_return_trace = create_trace(
-            x_data=som_series,
-            y_data=monthly_return_data[index],
-            opts=config.TRACE_OPTS.MONTHLY_RETURN
-            )
-
-    ret = {
-        'data':[
-            price_trace,
-            drawdown_trace,
-            volatility_trace,
-            monthly_return_trace
-            ],
-        'layout': create_view_layout(index)
-        }
-    return ret
-
-def create_trace(x_data, y_data, opts):
-    return {
-            'y': y_data,
-            'x': x_data,
-            **opts
-            }
-
-def create_view_layout(index):
-    """
-    Creates the dashboard layout
-
-    Parameters
-    __________
-    index - String denoting the selected index to be used as the title
-
-    Returns
-    _______
-    A dash compatible dict describing the layout
-    """
-    return {
-            'title': index,
-            'xaxis': {
-                'domain': [0.1, 0.9]
-                },
-            'yaxis': {
-                'title': 'Price'
-                },
-            'yaxis2': {
-                'title': 'Drawdown' ,
-                'overlaying': 'y',
-                'side': 'left',
-                'position': 0.05
-                },
-            'yaxis3': {
-                'title': 'Volatility',
-                'overlaying': 'y',
-                'side': 'right'
-                },
-            'yaxis4': {
-                'title': 'Monthly Return',
-                'overlaying': 'y',
-                'side': 'right',
-                'position': 0.95
-                }
-            }
-
 @app.callback(
         Output('commodity-graph', 'figure'),
         [Input('commodity-selector', 'value')])
@@ -187,7 +61,7 @@ def build_view(index):
     """
     Callback function to update the UI and cache resulting analysis
     """
-    components = dash_cache.get(index) if dash_cache.check(index) else create_dash_components(index)
+    components = dash_cache.get(index) if dash_cache.check(index) else create_dash_components(index, df, date_series, som_series, headers[0])
     cache_success = dash_cache.put(index, components)
     if (cache_success == False): print("There was an error cacheing the index components for {index}".format(index=index))
     return components
