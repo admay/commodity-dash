@@ -9,6 +9,7 @@ import pandas as pd
 import ffn
 
 import config
+from cache import Cache
 
 # TODO: Move this all into a startup script
 # TODO: Add CSV validation for warning of bad data formats
@@ -18,7 +19,7 @@ import config
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 # boujie cache for whack memoization
-dash_cache = {}
+dash_cache = Cache()
 
 # upload data on startup
 # can be optimized for runtime using real persistence
@@ -186,9 +187,9 @@ def build_view(index):
     """
     Callback function to update the UI and cache resulting analysis
     """
-    components = dash_cache[index] if index in dash_cache else create_dash_components(index)
-    cache_success = cache_components(index, components)
-    if (cache_success != 0): print("There was an error cacheing the index components for {index}".format(index=index))
+    components = dash_cache.get(index) if dash_cache.check(index) else create_dash_components(index)
+    cache_success = dash_cache.put(index, components)
+    if (cache_success == False): print("There was an error cacheing the index components for {index}".format(index=index))
     return components
 
 
