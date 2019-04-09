@@ -2,9 +2,27 @@ import pandas as pd
 import ffn
 
 import config
+from stats import get_index_stats
+
+def create_dash_table(index, df):
+    stats = get_index_stats(index, df)
+    headers = [
+            {'name': 'ID', 'id': 0},
+            {'name': 'header_1', 'id': 1},
+            {'name': 'header_2', 'id': 2},
+            {'name': 'header_3', 'id': 3},
+            {'name': 'header_4', 'id': 4},
+            ]
+    data = [
+            {'1': '1 x 1', '2': '1 x 2', '3': '1 x 3', '4': '1 x 4'},
+            {'1': '2 x 1', '2': '2 x 2', '3': '2 x 3', '4': '2 x 4'},
+            {'1': '3 x 1', '2': '3 x 2', '3': '3 x 3', '4': '3 x 4'},
+            {'1': '4 x 1', '2': '4 x 2', '3': '4 x 3', '4': '4 x 4'}
+            ]
+    return [headers, data]
 
 # maybe I should break these into multiple functions and add toggles for the users
-def create_dash_components(index, df, default_header):
+def create_dash_graph(index, df, stats):
     """
     Creates dash compatible graph components for displaying
 
@@ -29,19 +47,20 @@ def create_dash_components(index, df, default_header):
     index = index if index else default_header
     print('Selecting index: {index}'.format(index=index))
 
-    # split index data from base df
-    df_index = df[['DATE', 'YEAR', 'MONTH', index]]
+    monthly_returns_series = pd.Series(stats[index].monthly_returns)
 
-    monthly_return_data = df_index.groupby(['YEAR', 'MONTH']).apply(lambda p: p.iloc[-1] - p.iloc[0])
+    # monthly_return_data = df.groupby(['YEAR', 'MONTH']).apply(lambda p: p.iloc[-1] - p.iloc[0])
 
     # create trace dicts here
-    price_trace = create_trace(date_series, df_index[index], config.TRACE_OPTS.PRICE)
+    price_trace = create_trace(date_series, df[index], config.TRACE_OPTS.PRICE)
 
-    drawdown_trace = create_trace( date_series, df_index[index].to_drawdown_series(), config.TRACE_OPTS.DRAWDOWN)
+    drawdown_trace = create_trace( date_series, df[index].to_drawdown_series(), config.TRACE_OPTS.DRAWDOWN)
 
-    volatility_trace = create_trace( date_series, df_index[index].rolling(3).std(), config.TRACE_OPTS.VOLATILITY)
+    # can't find this one in FFN
+    volatility_trace = create_trace( date_series, df[index].rolling(3).std(), config.TRACE_OPTS.VOLATILITY)
 
-    monthly_return_trace = create_trace( som_series, monthly_return_data[index], config.TRACE_OPTS.MONTHLY_RETURN)
+    # prices.calc_stats[index].monthly_returns, work with this data
+    monthly_return_trace = create_trace( monthly_returns_series.index, monthly_returns_series.values, config.TRACE_OPTS.MONTHLY_RETURN)
 
     ret = {
         'data':[ price_trace, drawdown_trace, volatility_trace, monthly_return_trace ],
