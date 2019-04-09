@@ -4,7 +4,6 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import pandas as pd
-import ffn
 
 from cache import Cache
 from view import create_dash_components
@@ -20,8 +19,6 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 dash_cache = Cache()
 
 # upload data on startup
-# can be optimized for runtime using real persistence
-# optimizing for runtime now to reduce I/O costs
 df = sanatize_dataframe(pd.read_csv("./data.csv"))
 
 # grab the headers here before we add data
@@ -46,8 +43,7 @@ def build_view(index):
     Callback function to update the UI and cache resulting analysis
     """
     components = dash_cache.get(index) if dash_cache.check(index) else create_dash_components(index, df, headers[0])
-    cache_success = dash_cache.put(index, components)
-    if (cache_success == False): print("There was an error cacheing the index components for {index}".format(index=index))
+    dash_cache.put(index, components)
     return components
 
 
