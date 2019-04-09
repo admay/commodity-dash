@@ -36,10 +36,6 @@ df['DATE'] = pd.to_datetime(df['DATE'])
 # add date breakup cols for grouping and axis labeling later
 df['YEAR'], df['MONTH'], df['DAY'] = df['DATE'].dt.year, df['DATE'].dt.month, df['DATE'].dt.day
 
-# and create a date series for the x-axis
-date_series = df['DATE']
-som_series = pd.date_range(date_series.iloc[0], date_series.iloc[-1], freq='M').map(lambda d: d.replace(day=1))
-
 # create the dash app
 # port 8050 by default
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -58,7 +54,7 @@ def build_view(index):
     """
     Callback function to update the UI and cache resulting analysis
     """
-    components = dash_cache.get(index) if dash_cache.check(index) else create_dash_components(index, df, date_series, som_series, headers[0])
+    components = dash_cache.get(index) if dash_cache.check(index) else create_dash_components(index, df, headers[0])
     cache_success = dash_cache.put(index, components)
     if (cache_success == False): print("There was an error cacheing the index components for {index}".format(index=index))
     return components

@@ -1,7 +1,9 @@
+import pandas as pd
+
 import config
 
 # maybe I should break these into multiple functions and add toggles for the users
-def create_dash_components(index, df, date_series, som_series, default_header):
+def create_dash_components(index, df, default_header):
     """
     Creates dash compatible graph components for displaying
 
@@ -17,6 +19,10 @@ def create_dash_components(index, df, date_series, som_series, default_header):
     - commodity price, `price_trace`
     - commodity monthly return, `monthly_return_trace`
     """
+    # Create our default time series'
+    date_series = df['DATE']
+    som_series = pd.date_range(date_series.iloc[0], date_series.iloc[-1], freq='M').map(lambda d: d.replace(day=1))
+
     # set a default index if none is selected
     # used for app startup
     index = index if index else default_header
