@@ -8,6 +8,7 @@ import ffn
 
 from cache import Cache
 from view import create_dash_components
+from sanatize import sanatize_dataframe, get_headers
 
 # TODO: Add CSV validation for warning of bad data formats
 # TODO: Add file upload for ease of use by developers
@@ -21,20 +22,10 @@ dash_cache = Cache()
 # upload data on startup
 # can be optimized for runtime using real persistence
 # optimizing for runtime now to reduce I/O costs
-df = pd.read_csv("./data.csv")
-
-# make all cols uppercase for consistency
-df.columns = df.columns.map(lambda col: col.upper())
+df = sanatize_dataframe(pd.read_csv("./data.csv"))
 
 # grab the headers here before we add data
-headers = list(df)
-# date isn't a commodity so we're going to drop it by label here
-headers.remove('DATE')
-
-# use real datetimes in the dataframe
-df['DATE'] = pd.to_datetime(df['DATE'])
-# add date breakup cols for grouping and axis labeling later
-df['YEAR'], df['MONTH'], df['DAY'] = df['DATE'].dt.year, df['DATE'].dt.month, df['DATE'].dt.day
+headers = get_headers(df)
 
 # create the dash app
 # port 8050 by default
