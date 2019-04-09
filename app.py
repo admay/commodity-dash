@@ -8,6 +8,7 @@ import pandas as pd
 from cache import Cache
 from view import create_dash_components
 from sanatize import sanatize_dataframe, get_headers
+from stats import run
 
 # TODO: Add CSV validation for warning of bad data formats
 # TODO: Add file upload for ease of use by developers
@@ -49,3 +50,5 @@ def build_view(index):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+    # run(df, headers[0])
+

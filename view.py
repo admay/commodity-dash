@@ -35,37 +35,16 @@ def create_dash_components(index, df, default_header):
     monthly_return_data = df_index.groupby(['YEAR', 'MONTH']).apply(lambda p: p.iloc[-1] - p.iloc[0])
 
     # create trace dicts here
-    price_trace = create_trace(
-            x_data=date_series,
-            y_data=df_index[index],
-            opts=config.TRACE_OPTS.PRICE
-            )
+    price_trace = create_trace(date_series, df_index[index], config.TRACE_OPTS.PRICE)
 
-    drawdown_trace = create_trace(
-            x_data=date_series,
-            y_data=df_index[index].to_drawdown_series(),
-            opts=config.TRACE_OPTS.DRAWDOWN
-            )
+    drawdown_trace = create_trace( date_series, df_index[index].to_drawdown_series(), config.TRACE_OPTS.DRAWDOWN)
 
-    volatility_trace = create_trace(
-            x_data=date_series,
-            y_data=df_index[index].rolling(3).std(),
-            opts=config.TRACE_OPTS.VOLATILITY
-            )
+    volatility_trace = create_trace( date_series, df_index[index].rolling(3).std(), config.TRACE_OPTS.VOLATILITY)
 
-    monthly_return_trace = create_trace(
-            x_data=som_series,
-            y_data=monthly_return_data[index],
-            opts=config.TRACE_OPTS.MONTHLY_RETURN
-            )
+    monthly_return_trace = create_trace( som_series, monthly_return_data[index], config.TRACE_OPTS.MONTHLY_RETURN)
 
     ret = {
-        'data':[
-            price_trace,
-            drawdown_trace,
-            volatility_trace,
-            monthly_return_trace
-            ],
+        'data':[ price_trace, drawdown_trace, volatility_trace, monthly_return_trace ],
         'layout': create_view_layout(index)
         }
     return ret
@@ -100,28 +79,6 @@ def create_view_layout(index):
     """
     return {
             'title': index,
-            'xaxis': {
-                'domain': [0.1, 0.9]
-                },
-            'yaxis': {
-                'title': 'Price'
-                },
-            'yaxis2': {
-                'title': 'Drawdown' ,
-                'overlaying': 'y',
-                'side': 'left',
-                'position': 0.05
-                },
-            'yaxis3': {
-                'title': 'Volatility',
-                'overlaying': 'y',
-                'side': 'right'
-                },
-            'yaxis4': {
-                'title': 'Monthly Return',
-                'overlaying': 'y',
-                'side': 'right',
-                'position': 0.95
-                }
+            **config.AXIS_CONFIG.BASE
             }
 
