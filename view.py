@@ -40,7 +40,6 @@ def create_dash_graph(index, df, stats):
     """
     # Create our default time series'
     date_series = df['DATE']
-    som_series = pd.date_range(date_series.iloc[0], date_series.iloc[-1], freq='M').map(lambda d: d.replace(day=1))
 
     # set a default index if none is selected
     # used for app startup
