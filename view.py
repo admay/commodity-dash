@@ -2,7 +2,7 @@ import pandas as pd
 import ffn
 
 import config
-from stats import get_index_stats
+from stats import get_index_stats, get_index_traces
 
 def create_dash_table(index, df):
     stats = get_index_stats(index, df)
@@ -38,37 +38,16 @@ def create_dash_graph(index, df, stats):
     - commodity price, `price_trace`
     - commodity monthly return, `monthly_return_trace`
     """
-    # Create our default time series'
-    date_series = df['DATE']
-
     # set a default index if none is selected
     # used for app startup
     index = index if index else default_header
     print('Selecting index: {index}'.format(index=index))
 
     # create trace dicts here
-    price_trace = create_trace(date_series, df[index], config.TRACE_OPTS.PRICE)
-    drawdown_trace = create_trace( date_series, df[index].to_drawdown_series(), config.TRACE_OPTS.DRAWDOWN)
-    volatility_trace = create_trace( date_series, df[index].rolling(3).std(), config.TRACE_OPTS.VOLATILITY)
-    mr_series = pd.Series(stats[index].monthly_returns)
-    monthly_return_trace = create_trace( mr_series.index, mr_series.values, config.TRACE_OPTS.MONTHLY_RETURN)
-
-    traces = [ price_trace, drawdown_trace, volatility_trace, monthly_return_trace ]
+    traces = get_index_traces(index, df, stats)
 
     ret = { 'data': traces, 'layout': create_view_layout(index) }
     return ret
-
-def create_trace(x_data, y_data, opts):
-    """
-    Helper function to create trace dicts
-
-    Parameters
-    __________
-    x_data - Series repreenting the x axis
-    y_data - Series representing the y axis
-    opts - Dict of options containing any and all extra, trace specific configuration
-    """
-    return { 'y': y_data, 'x': x_data, **opts }
 
 def create_view_layout(index):
     """

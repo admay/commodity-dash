@@ -54,7 +54,7 @@ def build_view(index):
     stats_df = get_index_stats(index, index_df)
 
     # make a graph
-    graph_figure = dash_cache.get(index) if dash_cache.check(index) else create_dash_graph(index, index_df, index_stats)
+    graph_figure = dash_cache.get(index) if dash_cache.check(index) else create_dash_graph(index, index_df, stats_df)
 
     # cache the graph
     dash_cache.put(index, graph_figure)
