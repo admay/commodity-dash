@@ -47,20 +47,12 @@ def create_dash_graph(index, df, stats):
     index = index if index else default_header
     print('Selecting index: {index}'.format(index=index))
 
-    monthly_returns_series = pd.Series(stats[index].monthly_returns)
-
-    # monthly_return_data = df.groupby(['YEAR', 'MONTH']).apply(lambda p: p.iloc[-1] - p.iloc[0])
-
     # create trace dicts here
     price_trace = create_trace(date_series, df[index], config.TRACE_OPTS.PRICE)
-
     drawdown_trace = create_trace( date_series, df[index].to_drawdown_series(), config.TRACE_OPTS.DRAWDOWN)
-
-    # can't find this one in FFN
     volatility_trace = create_trace( date_series, df[index].rolling(3).std(), config.TRACE_OPTS.VOLATILITY)
-
-    # prices.calc_stats[index].monthly_returns, work with this data
-    monthly_return_trace = create_trace( monthly_returns_series.index, monthly_returns_series.values, config.TRACE_OPTS.MONTHLY_RETURN)
+    mr_series = pd.Series(stats[index].monthly_returns)
+    monthly_return_trace = create_trace( mr_series.index, mr_series.values, config.TRACE_OPTS.MONTHLY_RETURN)
 
     ret = {
         'data':[ price_trace, drawdown_trace, volatility_trace, monthly_return_trace ],
