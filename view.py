@@ -54,10 +54,9 @@ def create_dash_graph(index, df, stats):
     mr_series = pd.Series(stats[index].monthly_returns)
     monthly_return_trace = create_trace( mr_series.index, mr_series.values, config.TRACE_OPTS.MONTHLY_RETURN)
 
-    ret = {
-        'data':[ price_trace, drawdown_trace, volatility_trace, monthly_return_trace ],
-        'layout': create_view_layout(index)
-        }
+    traces = [ price_trace, drawdown_trace, volatility_trace, monthly_return_trace ]
+
+    ret = { 'data': traces, 'layout': create_view_layout(index) }
     return ret
 
 def create_trace(x_data, y_data, opts):
@@ -70,11 +69,7 @@ def create_trace(x_data, y_data, opts):
     y_data - Series representing the y axis
     opts - Dict of options containing any and all extra, trace specific configuration
     """
-    return {
-            'y': y_data,
-            'x': x_data,
-            **opts
-            }
+    return { 'y': y_data, 'x': x_data, **opts }
 
 def create_view_layout(index):
     """
@@ -88,8 +83,5 @@ def create_view_layout(index):
     _______
     A dash compatible dict describing the layout
     """
-    return {
-            'title': index,
-            **config.AXIS_CONFIG.BASE
-            }
+    return { 'title': index, **config.AXIS_CONFIG.BASE }
 
