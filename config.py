@@ -4,7 +4,8 @@ class TRACE_OPTS:
             'type': 'bar',
             'yaxis': 'y4',
             'side': 'left',
-            'position': 0.3
+            'position': 0.3,
+            'opacity': 0.7
             }
     VOLATILITY = {
             'name': 'Volatility',
@@ -50,5 +51,6 @@ class AXIS_CONFIG:
                 'overlaying': 'y',
                 'side': 'right',
                 'position': 0.95
-                }
+                },
+            'height': 600
             }

@@ -34,7 +34,13 @@ app.layout = html.Div(children=[
     html.H4(children='Commodity Data'),
     dcc.Dropdown(id='commodity-selector', options=[{'label': h, 'value': h} for h in headers]),
     dcc.Graph(id='commodity-graph'),
-    dt.DataTable(id='commodity-stats')
+    dt.DataTable(
+        id='commodity-stats',
+        style_table={
+            'overflowX': 'scroll',
+            'maxWidth': '100%',
+            },
+        )
     ])
 
 @app.callback(
