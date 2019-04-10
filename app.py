@@ -51,7 +51,6 @@ def build_view(index):
 
     # create our df and stats
     index_df = df[['DATE', 'YEAR', 'MONTH', index]]
-
     stats_df = get_index_stats(index, index_df)
 
     # make a graph
