@@ -9,6 +9,7 @@ import pandas as pd
 from cache import Cache
 from view import create_dash_graph, create_dash_table
 from sanatize import sanatize_dataframe, get_headers
+from stats import get_index_stats
 
 # TODO: Add CSV validation for warning of bad data formats
 # TODO: Add file upload for ease of use by developers
@@ -51,9 +52,7 @@ def build_view(index):
     # create our df and stats
     index_df = df[['DATE', 'YEAR', 'MONTH', index]]
 
-    # boy do I with this was a monad
-    stats_df = index_df[[index, 'DATE']].set_index('DATE')
-    index_stats = stats_df.calc_stats()
+    stats_df = get_index_stats(index, index_df)
 
     # make a graph
     graph_figure = dash_cache.get(index) if dash_cache.check(index) else create_dash_graph(index, index_df, index_stats)
