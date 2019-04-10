@@ -1,25 +1,28 @@
+import numpy as np
 import pandas as pd
 import ffn
 
 import config
 from stats import get_index_stats, get_index_traces
 
+def create_headers(stats):
+    """Creates a list of header dicts for use with dcc Tables
+    """
+    return [{'name': l[1], 'id': l[0]} for l in stats._stats() if l[1] is not None]
+
+def create_values(values):
+    """Creates a list of value dicts for use with dcc Tables
+    This will be a single map containing all of the index:value pairs for the table
+    """
+    l = [{v[0]: v[1]} for v in values.iteritems()]
+    j = [dict(pair for d in l for pair in d.items())]
+    return j
+
 def create_dash_table(index, df):
-    stats = get_index_stats(index, df)
-    headers = [
-            {'name': 'ID', 'id': 0},
-            {'name': 'header_1', 'id': 1},
-            {'name': 'header_2', 'id': 2},
-            {'name': 'header_3', 'id': 3},
-            {'name': 'header_4', 'id': 4},
-            ]
-    data = [
-            {'1': '1 x 1', '2': '1 x 2', '3': '1 x 3', '4': '1 x 4'},
-            {'1': '2 x 1', '2': '2 x 2', '3': '2 x 3', '4': '2 x 4'},
-            {'1': '3 x 1', '2': '3 x 2', '3': '3 x 3', '4': '3 x 4'},
-            {'1': '4 x 1', '2': '4 x 2', '3': '4 x 3', '4': '4 x 4'}
-            ]
-    return [headers, data]
+    stats = get_index_stats(index, df)[index]
+    headers = create_headers(stats)
+    values = create_values(stats.stats)
+    return [headers, values]
 
 # maybe I should break these into multiple functions and add toggles for the users
 def create_dash_graph(index, df, stats):
