@@ -13,10 +13,19 @@ def create_headers(stats):
 def create_values(values):
     """Creates a list of value dicts for use with dcc Tables
     This will be a single map containing all of the index:value pairs for the table
+
+    This is bad because its O(3n) right now...
+
+    Parameters
+    __________
+    pd.PerformanceStats object
+
+    Returns
+    _______
+    A list of one row for the table
     """
     l = [{v[0]: v[1]} for v in values.iteritems()]
-    j = [dict(pair for d in l for pair in d.items())]
-    return j
+    return [dict(pair for d in l for pair in d.items())]
 
 def create_dash_table(index, df):
     stats = get_index_stats(index, df)[index]
