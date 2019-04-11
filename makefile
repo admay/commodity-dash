@@ -7,6 +7,8 @@ help:
 
 install:
 	pip3 install -r requirements.txt
+
+setup-dev: install
 	python -m python_githooks
 
 lint:

@@ -89,4 +89,8 @@ if __name__ == '__main__':
             default='dev')
     options, args = parser.parse_args()
 
-    app.run_server(debug=options.DEBUG.lower() == 'true')
+    app.run_server(
+            debug=options.DEBUG.lower() == 'true',
+            host='0.0.0.0',
+            port=8080
+            )
