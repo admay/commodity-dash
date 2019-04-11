@@ -3,7 +3,7 @@
 
 help:
 	echo "Commands are 'sys-check', 'install', 'lint', 'test', 'run-prod', and 'run-dev'"
-	echo "Use `make run-prod` to just start the app or `make` to run the tests, linting, etc..."
+	echo "Use `make run-prod` to just start the app or `make` to install deps, run the tests, linting, etc..."
 
 install:
 	pip3 install -r requirements.txt
