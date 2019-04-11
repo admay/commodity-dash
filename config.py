@@ -27,6 +27,7 @@ class TRACE_OPTS:
             'position': 0.15
             }
 
+
 class AXIS_CONFIG:
     BASE = {
             'xaxis': {
@@ -36,7 +37,7 @@ class AXIS_CONFIG:
                 'title': 'Price'
                 },
             'yaxis2': {
-                'title': 'Drawdown' ,
+                'title': 'Drawdown',
                 'overlaying': 'y',
                 'side': 'left',
                 'position': 0.05

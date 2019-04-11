@@ -32,7 +32,10 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = html.Div(children=[
     html.H4(children='Commodity Data'),
-    dcc.Dropdown(id='commodity-selector', options=[{'label': h, 'value': h} for h in headers]),
+    dcc.Dropdown(
+        id='commodity-selector',
+        options=[{'label': h, 'value': h} for h in headers]
+        ),
     dcc.Graph(id='commodity-graph'),
     dt.DataTable(
         id='commodity-stats',
@@ -43,11 +46,12 @@ app.layout = html.Div(children=[
         )
     ])
 
+
 @app.callback(
-        [ Output('commodity-graph', 'figure'),
-          Output('commodity-stats', 'columns'),
-          Output('commodity-stats', 'data')],
-        [ Input('commodity-selector', 'value') ])
+        [Output('commodity-graph', 'figure'),
+         Output('commodity-stats', 'columns'),
+         Output('commodity-stats', 'data')],
+        [Input('commodity-selector', 'value')])
 def build_view(index):
     """
     Callback function to update the UI and cache resulting analysis
@@ -60,7 +64,11 @@ def build_view(index):
     stats_df = get_index_stats(index, index_df)
 
     # make a graph
-    graph_figure = dash_cache.get(index) if dash_cache.check(index) else create_dash_graph(index, index_df, stats_df)
+    graph_figure = (
+            dash_cache.get(index)
+            if dash_cache.check(index)
+            else create_dash_graph(index, index_df, stats_df)
+            )
 
     # cache the graph
     dash_cache.put(index, graph_figure)
@@ -69,10 +77,8 @@ def build_view(index):
     table_headers, table_data = create_dash_table(index, df)
 
     # cache the table
-    return [ graph_figure, table_headers, table_data ]
+    return [graph_figure, table_headers, table_data]
 
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-    # run(df, headers[0])
-
