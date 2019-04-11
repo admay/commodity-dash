@@ -1,5 +1,5 @@
 import pandas as pd
-import ffn
+import ffn  # NOQA
 
 import config
 
