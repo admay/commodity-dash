@@ -23,4 +23,10 @@ run-dev:
 run-prod:
 	python3 app.py -d false
 
+build-image:
+	docker image build -t comm-dash .
+
+run-docker:
+	docker run -p 8080:8080 comm-dash
+
 default: install lint test run-dev
