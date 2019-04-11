@@ -1,6 +1,4 @@
-# DV Dash Board
-
-DV Energy coding test.
+# Commodity Dash Board
 
 Commodity analysis dash board built with `Dash` and `ffn`.
 
@@ -16,5 +14,3 @@ Steps to running the app.
 To see the results of linting and tests run `make lint && make test`.
 
 To run the app in development mode run `make run-dev`. This will enable Dash `debug` mode that will refresh the server anytime a revision is saved.
-
-Tell Alex I said, "Hi"
