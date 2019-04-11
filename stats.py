@@ -13,7 +13,7 @@ def get_index_stats(index, df):
     prices = df[[index, 'DATE']].set_index('DATE')
     return prices.calc_stats()
 
-def create_trace(x_data, y_data, opts):
+def create_trace(x_data, y_data, opts={}):
     """
     Helper function to create trace dicts
 
