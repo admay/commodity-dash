@@ -5,6 +5,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import pandas as pd
+import optparse
 
 from cache import Cache
 from view import create_dash_graph, create_dash_table
@@ -81,4 +82,13 @@ def build_view(index):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    parser = optparse.OptionParser()
+    parser.add_option(
+            '-d', '--debug', action='store',
+            dest='DEBUG', help='run server in debug mode',
+            default='dev')
+    options, args = parser.parse_args()
+
+    print(options)
+
+    app.run_server(debug=options.DEBUG.lower() == 'true')
