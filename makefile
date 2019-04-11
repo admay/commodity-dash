@@ -7,6 +7,7 @@ help:
 
 install:
 	pip3 install -r requirements.txt
+	python -m python_githooks
 
 lint:
 	flake8 *.py
