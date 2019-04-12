@@ -5,6 +5,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from cache import Cache
 
+
 def test_cache():
     c = Cache()
 
@@ -27,5 +28,5 @@ def test_cache():
     ferris = c.check('table', 'Bueller')
     perfect_attendance = c.check('table', 'Nerd')
     # check should return true if the key is present else false
-    assert ferris == False
-    assert perfect_attendance == True
+    assert ferris is False
+    assert perfect_attendance is True
