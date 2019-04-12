@@ -9,28 +9,23 @@ def test_cache():
     c = Cache()
 
     # c.data should be a dict
-    assert isinstance(c.data, dict)
+    assert isinstance(c.table, dict)
+    assert isinstance(c.graph, dict)
 
-    c.put('a', 'foo')
-    c.put('b', {'b-a': 'foo'})
+    c.put('table', 'a', 'foo')
+    c.put('table', 'b', {'b-a': 'foo'})
     # should be able to put stuff
-    assert c.data == {'a': 'foo', 'b': {'b-a': 'foo'}}
+    assert c.table == {'a': 'foo', 'b': {'b-a': 'foo'}}
 
     # manually set cache the bad way
-    c.data = { 'test_get': 'success' }
-    get_data = c.get('test_get')
+    c.table = {'test_get': 'success'}
+    get_data = c.get('table', 'test_get')
     # should be able to fetch stuff
-    assert get_data == c.data['test_get']
+    assert get_data == c.table['test_get']
 
-    # manually set cache the bad way
-    c.data = { 'test_delete': 'success' }
-    c.delete('test_delete')
-    # should be able to delete stuff
-    assert c.data == {}
-
-    c.data = { 'Nerd': 'present!' }
-    ferris = c.check('Bueller')
-    perfect_attendance = c.check('Nerd')
+    c.table = {'Nerd': 'present!'}
+    ferris = c.check('table', 'Bueller')
+    perfect_attendance = c.check('table', 'Nerd')
     # check should return true if the key is present else false
     assert ferris == False
     assert perfect_attendance == True

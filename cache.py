@@ -1,16 +1,13 @@
 class Cache():
-    data = {}
+    graph = {}
+    table = {}
 
-    def put(self, key, data):
-        self.data[key] = data
+    def put(self, l, i, d):
+        getattr(self, l)[i] = d
         pass
 
-    def delete(self, key):
-        del self.data[key]
-        pass
+    def get(self, l, i):
+        return getattr(self, l)[i]
 
-    def get(self, key):
-        return self.data[key] if self.check(key) else {}
-
-    def check(self, key):
-        return True if key in self.data else False
+    def check(self, l, i):
+        return i in getattr(self, l)

@@ -66,18 +66,26 @@ def build_view(index):
 
     # make a graph
     graph_figure = (
-            dash_cache.get(index)
-            if dash_cache.check(index)
+            dash_cache.get('graph', index)
+            if dash_cache.check('graph', index)
             else create_dash_graph(index, index_df, stats_df)
             )
 
     # cache the graph
-    dash_cache.put(index, graph_figure)
+    if not dash_cache.check('graph', index):
+        dash_cache.put('graph', index, graph_figure)
 
     # create a table
-    table_headers, table_data = create_dash_table(index, df)
+    table_headers, table_data = (
+            dash_cache.get('table', index)
+            if dash_cache.check('table', index)
+            else create_dash_table(index, df)
+            )
 
     # cache the table
+    if not dash_cache.check('table', index):
+        dash_cache.put('table', index, [table_headers, table_data])
+
     return [graph_figure, table_headers, table_data]
 
 
