@@ -7,7 +7,7 @@ COPY requirements.txt /
 RUN make install
 
 COPY data.csv /
-COPY *.py /
+COPY app/* /app/
 
 EXPOSE 8080
 CMD [ "make", "run-prod" ]

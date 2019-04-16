@@ -18,10 +18,10 @@ test:
 	PYTHONPATH=./app pytest --verbose --color=yes
 
 run-dev:
-	python3 app.py -d true
+	python3 app/app.py -d true
 
 run-prod:
-	python3 app.py -d false
+	python3 app/app.py -d false
 
 build-image:
 	docker image build -t comm-dash .
