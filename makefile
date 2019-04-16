@@ -15,7 +15,7 @@ lint:
 	flake8 *.py
 
 test:
-	pytest --verbose --color=yes
+	PYTHONPATH=./app pytest --verbose --color=yes
 
 run-dev:
 	python3 app.py -d true
